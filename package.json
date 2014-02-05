@@ -1,0 +1,19 @@
+{
+  "name": "Voxa_GSD",
+  "version": "0.0.0",
+  "description": "Email consumer and broadcaster",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coyle/VoxaGSD.git"
+  },
+  "author": "Coyle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coyle/VoxaGSD/issues"
+  },
+  "homepage": "https://github.com/coyle/VoxaGSD"
+}
