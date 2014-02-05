@@ -1,41 +1,55 @@
-var ContextIO = require('contextio'),
-helper = require('./helpers.js'),
+var 
+ContextIO   = require('contextio'),
+helper      = require('./helpers.js'),
 ctxioClient = new ContextIO.Client(helper.apiKeys),
-fs = require('fs'),
-helpers = helper.users, 
-date = helper.date;
-//getMessages = require('./resources/getMessages');
+fs          = require('fs'),
+helpers     = helper.users, 
+date        = helper.date,
+socket      = require('socket.io-client'),
+connection;
 helpers.pop();
 
 
 
 
-exports.getMessage = function(helpers,date) {
+exports.getMessage = function( helpers, date, host, date ) {
     for(helper in helpers) {
+        // takes id of email account and gets all messages sent after 'date' 
         ctxioClient.accounts(helpers[helper]).messages().get({date_after: date},function (err, response) {
-        if (err) throw err;
-        if (response.body!=[]){
-            var socket = require('socket.io-client').connect('http://localhost:8080'); 
-            socket.on('news', function (data) {
-                socket.emit('my other event', response.body);
+            if (err) throw err;
+            
+            // connects to socket
+            connection = connect(socket, host);
+            
+            // After connected, emit messages to listeners
+            connection.on('news', function (data) {
+                connection.emit('my other event', response.body);
             });
-        
-            socket.on('disconnect',function() {
-                socket.disconnect(true);
+            
+            // disconnect from socket
+            connection.on('disconnect',function() {
+                connection.disconnect(true);
             });
+        });
+    }
+    
+    // Write time of last check
+    write_date(date);
+};
+
+// function that sets time of last email check
+write_date = function(file) {
+    fs.writeFile(file, Math.round((new Date()).getTime()/1000), function(err) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('success');
         }
     });
 }
 
-// Set time to last run 
-fs.writeFile('./resources/date.txt', Math.round((new Date()).getTime()/1000), function(err) {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log('success');
+// function that connects to socket
+connect = function(socket, host) {
+    var socket_connection = socket.connect(host);
+    return socket_connection;
     }
-})
-
-};
-
-
