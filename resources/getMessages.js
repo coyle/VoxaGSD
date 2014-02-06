@@ -4,7 +4,7 @@ helper      = require('./helpers.js'),
 ctxioClient = new ContextIO.Client(helper.apiKeys),
 fs          = require('fs'),
 helpers     = helper.users, 
-date        = helper.date,
+time        = helper.date,
 socket      = require('socket.io-client'),
 connection;
 helpers.pop();
@@ -12,10 +12,10 @@ helpers.pop();
 
 
 
-exports.getMessage = function( helpers, date, host, date ) {
+exports.getMessage = function( helpers, time, host, date ) {
     for(helper in helpers) {
         // takes id of email account and gets all messages sent after 'date' 
-        ctxioClient.accounts(helpers[helper]).messages().get({date_after: date},function (err, response) {
+        ctxioClient.accounts(helpers[helper]).messages().get({date_after: time},function (err, response) {
             if (err) throw err;
             
             // connects to socket
